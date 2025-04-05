@@ -30,6 +30,13 @@ git clone https://github.com/your-username/diabetes_meal_planner.git
    ### Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
 5. ### Open your web browser and go to http://127.0.0.1:5000/ to interact with the meal planner.
 ### Firstly enter the meal type and required information for nutrients in the form,click on generate meals button to get customized AI response and relevant links, then drag down to the bottom to use the USDA's FoodData Central API interface wherein you can enter the food you want to check in the search nutritional data and click search to get the fetched results.
+### ⚠️ Note: This app requires a `.env` file with your own API keys:
+### - `GEMINI_API_KEY` from Google AI Studio
+### - `USDA_API_KEY` from the USDA API portal
+
+## Create a `.env` file in the root folder like this:
+## GEMINI_API_KEY=your_api_key_here USDA_API_KEY=your_api_key_here
+
 
 
 
