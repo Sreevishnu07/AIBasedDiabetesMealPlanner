@@ -3,16 +3,19 @@ from flask_session import Session
 from google import genai
 import requests
 import re
+import os
+from dotenv import load_dotenv  
+
+load_dotenv()  
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key"  # Required for session storage
+app.secret_key = "your_secret_key"  
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-API_KEY = "AIzaSyAzyVf6qAdh5iWGUWxVHAUaFmNFEOdyVPI"
-client = genai.Client(api_key=API_KEY)
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))  
 
-USDA_API_KEY = "EmvkrhGbWIFSkEFZVRlBPK46RFGUPEjZ20yhsi2C"
+USDA_API_KEY = "EmvkrhGbWIFSkEFZVRlBPK46RFGUPEjZ20yhsi2C"  
 
 def get_gemini_ai_response(meal_type, max_calories, max_sugar, min_fiber, min_protein):
     prompt = (
@@ -22,14 +25,14 @@ def get_gemini_ai_response(meal_type, max_calories, max_sugar, min_fiber, min_pr
         f"Format the output as a visually appealing, well-structured HTML table with columns: "
         f"Meal Name, Ingredients, Calories, Sugar, Fiber, Protein, and Notes. "
         f"Ensure the table is properly colored and formatted for readability."
-        
+
         f"\n\nAdditionally:\n"
         f"- Provide a **brief, engaging summary** about the importance of nutrition in maintaining a healthy lifestyle.\n"
         f"- Include a **motivational quote** related to health and well-being, styled elegantly with color and emphasis.\n"
         f"- Offer **three concise medical tips** relevant to healthy eating and balanced nutrition.\n"
         f"- Generate an elegant **flowchart** with title visually appealing with normal rectangles and horizontal directed arrow connections that visually guides users on making healthier meal choices based on their dietary goals.\n"
         f"- Provide **relevant links** to trusted resources for meal planning, nutritional guidelines, or dietary recommendations. No unwanted explanations at the end.\n"
-        
+
         f"\n⚠ **Important Instructions:**\n"
         f"- Do **NOT** include unnecessary explanations or unrelated content.\n"
         f"- The response should be **highly structured, visually appealing, and medically useful**.\n"
@@ -49,10 +52,10 @@ def format_response_as_html(response_text):
         r"\|\s*(.*?)\s*\|\s*(.*?)\s*\|\s*(\d+)\s*\|\s*(\d+)\s*\|\s*(\d+)\s*\|\s*(\d+)\s*\|\s*(.*?)\s*\|",
         response_text
     )
-    
+
     if not meals:
-        return f"<p>{response_text}</p>"  
-    
+        return f"<p>{response_text}</p>"
+
     table_html = """
     <table class='table table-bordered mt-3'>
         <thead class='table-dark'>
@@ -68,10 +71,10 @@ def format_response_as_html(response_text):
         </thead>
         <tbody>
     """
-    
+
     for meal in meals:
         table_html += "<tr>" + "".join(f"<td>{col}</td>" for col in meal) + "</tr>"
-    
+
     table_html += "</tbody></table>"
     return table_html
 
