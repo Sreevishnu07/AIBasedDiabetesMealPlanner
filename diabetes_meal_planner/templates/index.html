@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diabetes Meal Planner</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="container mt-5">
+    <header class="text-center">
+      <h1 class="display-4">Diabetes Meal Planner</h1>
+      <p>Get personalized meal recommendations based on your dietary needs</p>
+    </header>
+
+    <form method="POST" class="meal-form shadow p-4 rounded">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label for="meal_type" class="form-label">Meal Type</label>
+          <select class="form-select" name="meal_type" id="meal_type" required>
+            <option value="breakfast">Breakfast</option>
+            <option value="lunch">Lunch</option>
+            <option value="dinner">Dinner</option>
+            <option value="snack">Snack</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label for="max_calories" class="form-label">Max Calories</label>
+          <input type="number" class="form-control" name="max_calories" id="max_calories" required>
+        </div>
+      </div>
+
+      <div class="row g-3 mt-2">
+        <div class="col-md-6">
+          <label for="max_sugar" class="form-label">Max Sugar (g)</label>
+          <input type="number" class="form-control" name="max_sugar" id="max_sugar" required>
+        </div>
+        <div class="col-md-6">
+          <label for="min_fiber" class="form-label">Min Fiber (g)</label>
+          <input type="number" class="form-control" name="min_fiber" id="min_fiber" required>
+        </div>
+      </div>
+
+      <div class="row g-3 mt-2">
+        <div class="col-md-6">
+          <label for="min_protein" class="form-label">Min Protein (g)</label>
+          <input type="number" class="form-control" name="min_protein" id="min_protein" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-lg mt-4 w-100">Generate Meals</button>
+    </form>
+
+    <div id="loading" class="text-center mt-4" style="display: none;">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    {% if ai_response %}
+      <div class="mt-4">
+        <h4 class="text-center">Recommended Meals</h4>
+        <div class="table-responsive">{{ ai_response|safe }}</div>
+      </div>
+    {% endif %}
+
+    <h3 class="text-center mt-5">Search Nutritional Data</h3>
+    <form method="POST" class="shadow p-4 rounded bg-light mt-3">
+      <label for="food_name" class="form-label">Enter Food Name:</label>
+      <input type="text" class="form-control" name="food_name" required>
+      <button type="submit" class="btn btn-success btn-lg mt-3 w-100">Search</button>
+    </form>
+
+    {% if nutrition_data %}
+      <div class="mt-4">
+        <h3 class="text-center">Nutrition Information</h3>
+        <table class="table table-bordered mt-3">
+          {% for key, value in nutrition_data.items() %}
+            <tr><td><strong>{{ key }}</strong></td><td>{{ value }}</td></tr>
+          {% endfor %}
+        </table>
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    document.querySelector('form').addEventListener('submit', function() {
+      document.getElementById('loading').style.display = 'block';
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
