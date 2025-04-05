@@ -15,7 +15,7 @@ Session(app)
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))  
 
-USDA_API_KEY = "EmvkrhGbWIFSkEFZVRlBPK46RFGUPEjZ20yhsi2C"  
+USDA_API_KEY = os.getenv("USDA_API_KEY")
 
 def get_gemini_ai_response(meal_type, max_calories, max_sugar, min_fiber, min_protein):
     prompt = (
